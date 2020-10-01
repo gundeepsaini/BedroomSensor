@@ -238,3 +238,149 @@ void LCD_DisplayTemp_City()
 		lcd.print("Outside");
 	}
 }
+
+
+
+void LCD_DisplayTemp_Room_City()
+{
+	
+	// Negative Check
+	bool IN_Temp_Negative = 0;
+	bool OUT_Temp_Negative = 0;
+
+	int IN_Temp = Temp;
+	int OUT_Temp = City_Temperature;
+	
+	if(IN_Temp < 0)
+	{
+		IN_Temp = IN_Temp * -1;
+		IN_Temp_Negative = 1;
+	}
+	if(OUT_Temp < 0)
+	{
+		OUT_Temp = OUT_Temp * -1;
+		OUT_Temp_Negative = 1;
+	}
+
+	int IN_t1 =  int(IN_Temp) / 10;
+	int IN_t2 =  int(IN_Temp) - (IN_t1 * 10);
+	int IN_t3 = (int(IN_Temp * 10) % 100) % 10;
+
+	int OUT_t1 =  int(OUT_Temp) / 10;
+	int OUT_t2 =  int(OUT_Temp) - (OUT_t1 * 10);
+	int OUT_t3 = (int(OUT_Temp * 10) % 100) % 10;
+
+
+	// Big Font position is in multiples of 3
+	lcd.clear();
+	lcd.setCursor(0,0);
+	
+	// --- --- - --- --- ---
+	//  t1  t2        t1  t2
+
+	// --- --- - --- --- ---
+	//   -  t2         -  t2
+
+	
+	if(IN_Temp_Negative)
+	{
+		lcd.setCursor(0,0);
+		lcd.write(4);
+	}
+	else
+	{	BigFont_print(IN_t1, 0); }
+	BigFont_print(IN_t2, 3);		
+
+
+	lcd.setCursor(8,0);
+	lcd.print((char)223);
+	lcd.print("C");
+
+
+	if(OUT_Temp_Negative)
+	{
+		lcd.setCursor(10,0);
+		lcd.write(4);
+	}
+	else
+	{	BigFont_print(OUT_t1, 10); }
+	BigFont_print(OUT_t2, 13);
+
+}
+
+
+void LCD_DisplayText_Temp()
+{
+	lcd.clear();
+	lcd.setCursor(1,1);
+	lcd.print("IN");
+
+	lcd.setCursor(5,0);
+	lcd.print("Temp");
+
+	lcd.setCursor(12,1);
+	lcd.print("OUT");
+}
+
+
+
+void LCD_DisplayText_Humidity()
+{
+	lcd.clear();
+	lcd.setCursor(1,1);
+	lcd.print("IN");
+
+	lcd.setCursor(7,0);
+	lcd.print("%");
+
+	lcd.setCursor(12,1);
+	lcd.print("OUT");
+}
+
+
+void LCD_DisplayHumidity_Time()
+{
+		
+	int IN_h1 = int(Humidity)/10;
+	int IN_h2 = int(Humidity) - (IN_h1*10);
+
+	Time_NTP_updateVar();
+
+	lcd.clear();
+	lcd.setCursor(0,0);
+	lcd.print(time_now.hr);
+	lcd.print(":");
+	lcd.print(time_now.min);
+	
+
+	lcd.setCursor(12,1);
+	lcd.print(int(Humidity));
+	lcd.print("%");
+}
+
+
+int LCD_cycle = 0;
+
+void LCD_Update_2()
+{		
+	{		
+		switch(LCD_cycle)
+		{
+			case 0:	
+				LCD_DisplayText_Temp();
+				break;
+			case 1:	
+				LCD_DisplayTemp_Room_City();
+				break;
+			case 2:	
+				LCD_DisplayHumidity_Time();
+				break;
+		}
+
+		if(LCD_cycle >= 2)
+			LCD_cycle = 0;
+		else
+			LCD_cycle++;
+	}
+}
+

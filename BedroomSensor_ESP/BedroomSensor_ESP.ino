@@ -113,8 +113,10 @@ EasyButton button(Button_Pin);
 
 void setup() 
 {
+  // Start up with all lights off - LED and LCD both to avoid disturbance
   pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
+  //digitalWrite(LED_BUILTIN, LOW);
+  digitalWrite(LED_BUILTIN, HIGH);
   
   Serial.begin(115200);
   Serial.println(DeviceHostName);
