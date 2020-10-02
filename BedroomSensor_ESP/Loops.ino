@@ -19,7 +19,7 @@ void Fast_Loop()
 void Mid1_Loop()
 {  
   get_Temp_Humidity();
-  LCD_Update();
+  LCD_Update_2();
 }
 
 

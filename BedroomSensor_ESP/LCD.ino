@@ -25,6 +25,7 @@ void LCD_Update()
 }
 
 
+bool Light_Time_Set;
 
 void LCD_Backlight_handle()
 {
@@ -46,12 +47,15 @@ void LCD_Backlight_handle()
   	if(hr_now >= LCD_StartTime_hr &&
   	   mins_now >= LCD_StartTime_mins &&
   	   hr_now <= LCD_StopTime_hr &&
-  	   mins_now <= LCD_StopTime_mins)
+  	   mins_now <= LCD_StopTime_mins &&
+  	   !Light_Time_Set)
   	{
-  		LCD_backlight_Ctrl(2);	
+  		LCD_backlight_Ctrl(2);
+  		Light_Time_Set = 1;	
   	}
   	else
   		LCD_backlight_Ctrl(0);
+  		Light_Time_Set = 0;
   }
 }
 
@@ -281,15 +285,15 @@ void LCD_DisplayTemp_Room_City()
 	// --- --- - --- --- ---
 	//   -  t2         -  t2
 
-	
-	if(IN_Temp_Negative)
+
+	if(OUT_Temp_Negative)
 	{
 		lcd.setCursor(0,0);
 		lcd.write(4);
 	}
 	else
-	{	BigFont_print(IN_t1, 0); }
-	BigFont_print(IN_t2, 3);		
+	{	BigFont_print(OUT_t1, 0); }
+	BigFont_print(OUT_t2, 3);		
 
 
 	lcd.setCursor(8,0);
@@ -297,14 +301,14 @@ void LCD_DisplayTemp_Room_City()
 	lcd.print("C");
 
 
-	if(OUT_Temp_Negative)
+	if(IN_Temp_Negative)
 	{
 		lcd.setCursor(10,0);
 		lcd.write(4);
 	}
 	else
-	{	BigFont_print(OUT_t1, 10); }
-	BigFont_print(OUT_t2, 13);
+	{	BigFont_print(IN_t1, 10); }
+	BigFont_print(IN_t2, 13);
 
 }
 
@@ -312,14 +316,14 @@ void LCD_DisplayTemp_Room_City()
 void LCD_DisplayText_Temp()
 {
 	lcd.clear();
-	lcd.setCursor(1,1);
-	lcd.print("IN");
+	lcd.setCursor(0,0);
+	lcd.print("OUT");
 
-	lcd.setCursor(5,0);
+	lcd.setCursor(6,1);
 	lcd.print("Temp");
 
-	lcd.setCursor(12,1);
-	lcd.print("OUT");
+	lcd.setCursor(14,0);
+	lcd.print("IN");
 }
 
 
@@ -327,14 +331,11 @@ void LCD_DisplayText_Temp()
 void LCD_DisplayText_Humidity()
 {
 	lcd.clear();
-	lcd.setCursor(1,1);
-	lcd.print("IN");
+	lcd.setCursor(0,0);
+	lcd.print("TEMP");
 
-	lcd.setCursor(7,0);
-	lcd.print("%");
-
-	lcd.setCursor(12,1);
-	lcd.print("OUT");
+	lcd.setCursor(8,1);
+	lcd.print("HUMIDITY");
 }
 
 
@@ -346,16 +347,30 @@ void LCD_DisplayHumidity_Time()
 
 	Time_NTP_updateVar();
 
+	int time_hr = time_now.hr;
+	if(time_hr > 12)
+		time_hr = time_hr - 12;
+
+	int time1 = int(time_hr)/10;
+	int time2 = int(time_hr) - (time1*10);
+	int time3 = int(time_now.min)/10;
+	int time4 = int(time_now.min) - (time3*10);
+
 	lcd.clear();
 	lcd.setCursor(0,0);
-	lcd.print(time_now.hr);
+	if(time1 > 0)
+		lcd.print("1");
+	BigFont_print(time2, 1);
+	lcd.setCursor(4,1);	
 	lcd.print(":");
-	lcd.print(time_now.min);
+	BigFont_print(time3, 5);
+	BigFont_print(time3, 8);
 	
 
-	lcd.setCursor(12,1);
-	lcd.print(int(Humidity));
+	lcd.setCursor(13,0);
 	lcd.print("%");
+	lcd.print(int(Humidity));
+	
 }
 
 
@@ -372,12 +387,15 @@ void LCD_Update_2()
 			case 1:	
 				LCD_DisplayTemp_Room_City();
 				break;
-			case 2:	
+			case 2:					
+				LCD_DisplayText_Humidity()
+				break;
+			case 3:	
 				LCD_DisplayHumidity_Time();
 				break;
 		}
 
-		if(LCD_cycle >= 2)
+		if(LCD_cycle >= 3)
 			LCD_cycle = 0;
 		else
 			LCD_cycle++;
