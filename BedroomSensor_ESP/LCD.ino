@@ -292,7 +292,9 @@ void LCD_DisplayTemp_Room_City()
 		lcd.write(4);
 	}
 	else
-	{	BigFont_print(OUT_t1, 0); }
+	{	if(OUT_t1 != 0)
+			BigFont_print(OUT_t1, 0); 
+	}
 	BigFont_print(OUT_t2, 3);		
 
 
@@ -307,7 +309,9 @@ void LCD_DisplayTemp_Room_City()
 		lcd.write(4);
 	}
 	else
-	{	BigFont_print(IN_t1, 10); }
+	{	if(IN_t1 != 0)
+			BigFont_print(IN_t1, 10); 
+	}
 	BigFont_print(IN_t2, 13);
 
 }
@@ -380,25 +384,29 @@ void LCD_Update_2()
 {		
 	{		
 		switch(LCD_cycle)
-		{
-			case 0:	
-				LCD_DisplayText_Temp();
-				break;
-			case 1:	
+		{			
+			case 0:
+			case 2:	
 				LCD_DisplayTemp_Room_City();
 				break;
-			case 2:					
-				LCD_DisplayText_Humidity()
-				break;
+			case 1:
 			case 3:	
 				LCD_DisplayHumidity_Time();
 				break;
+			// to be skipped
+			case 11:	
+				LCD_DisplayText_Temp();
+				break;							
+			case 12:					
+				LCD_DisplayText_Humidity()
+				break;
+
 		}
 
 		if(LCD_cycle >= 3)
 			LCD_cycle = 0;
 		else
-			LCD_cycle++;
+			LCD_cycle++;		
 	}
 }
 
