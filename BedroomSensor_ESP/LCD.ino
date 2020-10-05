@@ -398,7 +398,7 @@ void LCD_Update_2()
 				LCD_DisplayText_Temp();
 				break;							
 			case 12:					
-				LCD_DisplayText_Humidity()
+				LCD_DisplayText_Humidity();
 				break;
 
 		}
