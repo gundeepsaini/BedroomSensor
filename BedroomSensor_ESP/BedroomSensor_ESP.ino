@@ -11,52 +11,33 @@ Note:
   - send "OTA" on blynk terminal to enter dedicated mode
     or navigate to "ip/OTA" for OTA through web portal
   
-To-Do:
-  - 
-
-Changes:
-  - v20 | 14.03.2020
-    Updated code and moved to Github
-    Shifted personal config data to Secret.h file
-    Added City Humidity as additional parameter
-    Changed time handling to include DST effects (day light saving)    
-
-  - v15 | 09.03.2020
-    Updated MQTT protocol to be auto-discovered by Home Assistant
-
-  - v14 | 08.03.2020
-    Added MQTT protocol to communicate with RPi
-
-  - v13 | 27.02.2020
-    Forgot to add changes from RPi files
-    Added support for blink and server
-    removed fetching from other ESP servers - module serves as client only
-
-  - v12 | 27.02.2020
-    Use of Big Font on LCD
-    Removed data fetch from other sensors
-
-  - v11 | 19.01.2020
-    Ongoing changes
 
 ------------------------------------------- */
 
 
 /* ------------- LIB ------------------------------ */
-#include "Secrets.h"
-#include <ESP8266WiFi.h>
-#include <Wire.h> 
-#include <LiquidCrystal_I2C.h>
-#include <ESP8266mDNS.h>
+
+
 #include <ArduinoOTA.h>
-#include <WiFiClient.h>
 #include <ESP8266WebServer.h>
-#include <WiFiUdp.h>
-#include "DHTesp.h"
-#include <DallasTemperature.h>
-#include <ESP8266WebServer.h>
-#include <EasyButton.h>
+#include <Wire.h> 
+
+#include <DS18B20.h>
+
+#include "Secrets.h"
+#include "src/LiquidCrystal/LiquidCrystal_I2C.h"
+#include "src/DHTesp/DHTesp.h"
+#include "src/EasyButton/EasyButton.h"
+
+
+
+// -------------Blynk--------------
+
 #include <BlynkSimpleEsp8266.h>
+char BlynkAuth[] = SECRET_BLYNK_AUTH4;
+WidgetTerminal terminal(V0);
+
+// --------------------------------
 
 
 /* ------------- CONFIG VAR ------------------------------ */
@@ -75,8 +56,8 @@ int LCD_TMR_SP = 60;
 
 
 /* ------------- VAR ------------------------------ */
-const char* ssid             = SECRET_WIFI_SSID2;
-const char* pass             = SECRET_WIFI_PASS2;
+const char* ssid             = SECRET_WIFI_SSID3;
+const char* pass             = SECRET_WIFI_PASS3;
 const char* DeviceHostName   = SECRET_Device_Name4;
 const char* OTA_Password     = SECRET_Device_OTA_PASS; 
 unsigned long lastrun_fast, lastrun_Mid1;
@@ -102,20 +83,16 @@ unsigned long LCD_TMR_Start=0;
 
 //(lcd_Addr,En,Rw,Rs,d4,d5,d6,d7,backlighPin,t_backlighPol)
 LiquidCrystal_I2C lcd(0x27,5,6,7,4,3,2,1,0,POSITIVE);
-WiFiUDP ntpUDP;
 DHTesp DHT;
-OneWire oneWire(TEMP_Pin);
-DallasTemperature TempSensor(&oneWire);
 ESP8266WebServer server(80);
 EasyButton button(Button_Pin);
-
+DS18B20 ds(TEMP_Pin);
 
 
 void setup() 
 {
   // Start up with all lights off - LED and LCD both to avoid disturbance
   pinMode(LED_BUILTIN, OUTPUT);
-  //digitalWrite(LED_BUILTIN, LOW);
   digitalWrite(LED_BUILTIN, HIGH);
   
   Serial.begin(115200);
@@ -150,7 +127,7 @@ void setup()
   Time_NTP_Config();  
 
   DHT.setup(DHT_Pin, DHTesp::DHT11);
-  TempSensor.begin();
+  Config_TempSensor_DS18B20();
   button.begin();
   button.onPressed(onButtonPressed);
   

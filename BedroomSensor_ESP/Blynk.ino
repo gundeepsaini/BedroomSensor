@@ -1,7 +1,6 @@
 
 
-char BlynkAuth[] = SECRET_BLYNK_AUTH4;
-WidgetTerminal terminal(V0);
+
 
 /**********************************************************/
 void Blynk_Config()

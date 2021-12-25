@@ -2,7 +2,7 @@
 
 /******************** LIB **************************************/
 #define MQTT_MAX_PACKET_SIZE 1024  // < ----- Change in lib: This is because the defaul maxium length is 128b. So just go to PubSubClient.h and change #define MQTT_MAX_PACKET_SIZE 128 to #define MQTT_MAX_PACKET_SIZE 1024
-#include <PubSubClient.h>
+#include "src/PubSubClient/PubSubClient.h"
 #include <ArduinoJson.h>
 
 

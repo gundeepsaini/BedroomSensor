@@ -1,13 +1,28 @@
 
 
+
+void Config_TempSensor_DS18B20()
+{
+  uint8_t address[] = {40, 250, 31, 218, 4, 0, 0, 52};
+  uint8_t response = 0;
+
+  response = ds.select(address);
+
+  if(!response) 
+  {
+    Serial.println("Device not found!");
+  }
+}
+
+
+
 void get_Temp_Humidity()
 {
   //delay(DHT.getMinimumSamplingPeriod());
 
   DHT_temperature = DHT.getTemperature();
   Humidity = DHT.getHumidity();
-  TempSensor.requestTemperatures();
-  Temp = TempSensor.getTempCByIndex(0);
+  Temp = ds.getTempC();
 
   if(Temp < -50)
     {
