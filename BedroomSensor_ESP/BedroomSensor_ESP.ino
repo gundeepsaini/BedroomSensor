@@ -35,7 +35,7 @@ Note:
 
 #include <BlynkSimpleEsp8266.h>
 char BlynkAuth[] = SECRET_BLYNK_AUTH4;
-WidgetTerminal terminal(V0);
+
 
 // --------------------------------
 
@@ -48,6 +48,7 @@ unsigned long looptime_Slow       = 1 * (60);      // in mins
 unsigned long looptime_VerySlow   = 5 * (60);      // in mins
 
 int LCD_TMR_SP = 60;
+
 #define SDA_Pin     0 
 #define SCK_Pin     5
 #define Button_Pin  4
@@ -124,7 +125,7 @@ void setup()
   lcd.setCursor(0,1);
   lcd.print("Wifi");
 
-  Time_NTP_Config();  
+  Config_Time();  
 
   DHT.setup(DHT_Pin, DHTesp::DHT11);
   Config_TempSensor_DS18B20();

@@ -40,9 +40,8 @@ void LCD_Backlight_handle()
 
   if(LCD_TimeBasedCtrl)
   {
-  	Time_NTP_updateVar();
-  	int hr_now  	= time_now.hr;
-  	int mins_now  	= time_now.min;
+  	int hr_now  	= timeClient.getHours();
+  	int mins_now  	= timeClient.getMinutes();
 
   	if(hr_now >= LCD_StartTime_hr &&
   	   mins_now >= LCD_StartTime_mins &&
@@ -349,16 +348,17 @@ void LCD_DisplayHumidity_Time()
 	int IN_h1 = int(Humidity)/10;
 	int IN_h2 = int(Humidity) - (IN_h1*10);
 
-	Time_NTP_updateVar();
 
-	int time_hr = time_now.hr;
+	int time_hr = timeClient.getHours();
+	int time_mins = timeClient.getMinutes();
+
 	if(time_hr > 12)
 		time_hr = time_hr - 12;
 
 	int time1 = int(time_hr)/10;
 	int time2 = int(time_hr) - (time1*10);
-	int time3 = int(time_now.min)/10;
-	int time4 = int(time_now.min) - (time3*10);
+	int time3 = int(time_mins)/10;
+	int time4 = int(time_mins) - (time3*10);
 
 	lcd.clear();
 	lcd.setCursor(0,0);

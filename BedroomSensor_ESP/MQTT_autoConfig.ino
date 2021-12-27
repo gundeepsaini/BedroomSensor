@@ -18,10 +18,6 @@ const char* mqtt_server     = SECRET_MQTT_Server;
 const char* mqtt_user       = SECRET_MQTT_User;
 const char* mqtt_password   = SECRET_MQTT_Pass;
 
-//#define MQTT_TOPIC_LWT      "homeassistant/sensor/Bedroom/status"
-//#define MQTT_LWT_MESSAGE    "Offline"
-//boolean willRetain = true;
-//byte willQoS = 1;
 
 #define MQTT_CONFIG_TEMP      "homeassistant/sensor/Bedroom/Temp/config"
 #define MQTT_CONFIG_HUMIDITY  "homeassistant/sensor/Bedroom/Humidity/config"
@@ -50,12 +46,7 @@ void MQTT_loop()
 
 void MQTT_publish()
 {   
-    //float diff = 0.1;
-    //bool TempChanged      = MQTT_hasValueChanged(Temp, lastTemp, diff);
-    //bool HumidityChanged  = MQTT_hasValueChanged(Humidity, lastHumidity, diff);
-    //bool TempCityChanged  = MQTT_hasValueChanged(City_Temperature, lastCity_Temperature, diff);
-
-
+ 
     if(1) // || TempChanged || HumidityChanged || TempCityChanged) // disabled the change parameter flag
     {
       // Use arduinojson.org/v6/assistant to compute the capacity.
