@@ -19,11 +19,19 @@ const char* mqtt_user       = SECRET_MQTT_User;
 const char* mqtt_password   = SECRET_MQTT_Pass;
 
 
-#define MQTT_CONFIG_TEMP      "homeassistant/sensor/Bedroom/Temp/config"
-#define MQTT_CONFIG_HUMIDITY  "homeassistant/sensor/Bedroom/Humidity/config"
-#define MQTT_CONFIG_TEMP_CITY "homeassistant/sensor/Bedroom/TempCity/config"
-#define MQTT_CONFIG_HUMI_CITY "homeassistant/sensor/Bedroom/HumiCity/config"
-#define MQTT_TOPIC_STATE      "homeassistant/sensor/Bedroom/state"
+#define MQTT_CONFIG_TEMP      "HA/BedroomSensor/Temp/config"
+#define MQTT_CONFIG_HUMIDITY  "HA/BedroomSensor/Humidity/config"
+#define MQTT_CONFIG_TEMP_CITY "HA/BedroomSensor/TempCity/config"
+#define MQTT_CONFIG_HUMI_CITY "HA/BedroomSensor/HumiCity/config"
+#define MQTT_TOPIC_STATE      "HA/BedroomSensor/Bedroom/state"
+
+// Will Topic - Availability
+#define MQTT_TOPIC_WILL        "HA/BedroomSensor/status"     
+#define MQTT_OFFLINE           "Offline"
+#define MQTT_ONLINE            "Active"
+
+#define MQTT_ON                "ON"
+#define MQTT_OFF               "OFF"
 
 
 /**************** External Functions ************************************/
@@ -88,9 +96,10 @@ void MQTT_reconnect()
   if (millis()/1000 - lastReconnectAttempt > 30 || lastReconnectAttempt == 0) 
   {
       Serial.println("MQTT reconnecting");
-      if (client.connect(DeviceHostName, mqtt_user, mqtt_password)) 
-      //if(client.connect(DeviceHostName, mqtt_user, mqtt_password, MQTT_TOPIC_LWT, willQoS, willRetain, MQTT_LWT_MESSAGE))  
+      //boolean connect (clientID, [username, password], [willTopic, willQoS, willRetain, willMessage], [cleanSession])
+      if (client.connect(DeviceHostName, mqtt_user, mqtt_password, MQTT_TOPIC_WILL, 1, true, MQTT_OFFLINE)) 
       {
+        client.publish(MQTT_TOPIC_WILL, MQTT_ONLINE, true);
         //client.publish(MQTT_TOPIC_LWT, "Online", true);
 
         //MQTT_publish_config_Temp();
