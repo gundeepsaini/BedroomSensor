@@ -297,7 +297,7 @@ void LCD_DisplayTemp_Room_City()
 	BigFont_print(OUT_t2, 3);		
 
 
-	lcd.setCursor(8,0);
+	lcd.setCursor(7,0);
 	lcd.print((char)223);
 	lcd.print("C");
 
