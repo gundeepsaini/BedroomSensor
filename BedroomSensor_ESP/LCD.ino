@@ -380,6 +380,8 @@ void LCD_DisplayHumidity_Time()
 
 int LCD_cycle = 0;
 
+
+
 void LCD_Update_2()
 {		
 	{		
