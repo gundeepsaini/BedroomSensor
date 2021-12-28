@@ -371,9 +371,11 @@ void LCD_DisplayHumidity_Time()
 	BigFont_print(time4, 8);
 	
 
-	lcd.setCursor(15,1);
-	lcd.print("%");
+	lcd.setCursor(13,0);
+	lcd.print("Hum");
+	lcd.setCursor(13,1);
 	lcd.print(int(Humidity));
+	lcd.print("%");
 	
 }
 
