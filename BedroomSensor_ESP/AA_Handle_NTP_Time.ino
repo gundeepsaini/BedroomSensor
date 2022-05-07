@@ -3,21 +3,26 @@
 
 #include <WiFiUdp.h>
 #include "src/NTPClient/NTPClient.h"
-
+#include "time.h"
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, NTP_Server_Address);
 
 
+//String TimeZone = "CET-1CEST,M3.5.0,M10.5.0/3"; /* Rome https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv */
+
 
 void Config_Time()
 {
   timeClient.begin();
-  timeClient.setTimeOffset(1 * 3600);   // Timezone: 1 * 3600 = GMT+1
+  
+  //setenv("TZ","CET-1CEST,M3.5.0,M10.5.0/3", 1);
+  //tzet();
+
+  timeClient.setTimeOffset(2 * 60 * 60 );   // Timezone: 1 * 3600 = GMT+1
   timeClient.update();
+
 }
-
-
 
 
 void Time_NTP_Update()
