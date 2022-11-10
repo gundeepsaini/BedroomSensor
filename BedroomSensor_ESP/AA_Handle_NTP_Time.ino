@@ -3,7 +3,7 @@
 
 #include <WiFiUdp.h>
 #include "src/NTPClient/NTPClient.h"
-#include "time.h"
+//#include "time.h"
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, NTP_Server_Address);
@@ -19,7 +19,7 @@ void Config_Time()
   //setenv("TZ","CET-1CEST,M3.5.0,M10.5.0/3", 1);
   //tzet();
 
-  timeClient.setTimeOffset(2 * 60 * 60 );   // Timezone: 1 * 3600 = GMT+1
+  timeClient.setTimeOffset(1 * 60 * 60 );   // Timezone: 1 * 3600 = GMT+1
   timeClient.update();
 
 }
