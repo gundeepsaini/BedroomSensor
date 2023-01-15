@@ -132,7 +132,7 @@ void setup()
   button.begin();
   button.onPressed(onButtonPressed);
   
-  Blynk_Config();
+  //Blynk_Config();
   OTA_Config();
   WebServer_Config();
   MQTT_config();

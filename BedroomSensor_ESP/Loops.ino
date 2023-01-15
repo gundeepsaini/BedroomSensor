@@ -8,7 +8,7 @@ void Always_loop()
 
 void Fast_Loop()
 {   
-  Blynk.run();
+  //Blynk.run();
   button.read();
   server.handleClient();
   MQTT_loop();
@@ -46,7 +46,7 @@ void VerySlow_Loop()
   
   Time_NTP_Update();  
   get_City_Weather();
-  Blynk_Graph_DataPush();
+  //Blynk_Graph_DataPush();
 }
 
 
