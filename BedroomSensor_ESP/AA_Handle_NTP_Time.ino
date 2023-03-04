@@ -22,6 +22,8 @@ void Config_Time()
   timeClient.setTimeOffset(1 * 60 * 60 );   // Timezone: 1 * 3600 = GMT+1
   timeClient.update();
 
+  Time_print_current_date_time();
+
 }
 
 

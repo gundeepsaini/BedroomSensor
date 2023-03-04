@@ -24,6 +24,8 @@ void Prep_webpage1()
   String body_table_row03 =String("<tr><td>03</td><td>City Temperature</td><td>")        + String(City_Temperature)   + String("</td><td>&#8451;</td></tr>");
   String body_table_row04 =String("<tr><td>04</td><td>City Humidity</td><td>")           + String(City_Humidity)      + String("</td><td>%</td></tr>");
   String body_table_row05 =String("<tr><td>05</td><td>DHT11 Temperature</td><td>")       + String(DHT_temperature)    + String("</td><td>&#8451;</td></tr>");
+  String body_table_row06 =String("<tr><td>05</td><td>LCD_TimeBasedCtrl</td><td>")       + String(LCD_TimeBasedCtrl)    + String("</td><td>-</td></tr>");
+  
   
   
 
@@ -36,6 +38,7 @@ void Prep_webpage1()
          body_table_row03 +
          body_table_row04 +
          body_table_row05 +
+         body_table_row06 +
   			 body_end; 
          
 }

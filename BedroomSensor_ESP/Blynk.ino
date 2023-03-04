@@ -50,10 +50,10 @@ BLYNK_READ(V3)
 BLYNK_WRITE(V4)
 {
   int input = param.asInt();
-  if(input > 0)
-    LCD_TimeBasedCtrl = 1;
-  else
-    LCD_TimeBasedCtrl = 0;
+  //if(input > 0)
+  //  LCD_TimeBasedCtrl = 1;
+  //else
+  //  LCD_TimeBasedCtrl = 0;
 }
 
 BLYNK_WRITE(V5)
