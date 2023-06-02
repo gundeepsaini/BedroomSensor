@@ -1,97 +1,113 @@
 
+// DST and Time Zones https://randomnerdtutorials.com/esp32-ntp-timezones-daylight-saving/
 // https://randomnerdtutorials.com/esp8266-nodemcu-date-time-ntp-client-server-arduino/
+// https://mikaelpatel.github.io/Arduino-RTC/de/df7/time_8h_source.html
 
-#include <WiFiUdp.h>
-#include "src/NTPClient/NTPClient.h"
-//#include "time.h"
+/*
 
-WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, NTP_Server_Address);
+int8_t 	tm_sec
+ 	Seconds [0-60]. More...
+int8_t 	tm_min
+ 	Minutes [0-59]. More...
+int8_t 	tm_hour
+ 	Hours [0-23]. More...
+int8_t 	tm_mday
+ 	Day in Month [1-31]. More...
+int8_t 	tm_wday
+ 	Days since Sunday [0-6]. More...
+int8_t 	tm_mon
+ 	0-11 Months since January [0-11]. More...
+int16_t 	tm_year
+ 	Years since 1900. More..
+int16_t 	tm_yday
+ 	days since January 1 [0-365]. More... 
+int16_t 	tm_isdst
+ 	Daylight Saving Time flag [-1/0/1]. More...
+
+*/
 
 
-//String TimeZone = "CET-1CEST,M3.5.0,M10.5.0/3"; /* Rome https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv */
+
+#include "time.h"
+
+
+// Timezone Info: https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
+#define TimeZone "CET-1CEST,M3.5.0,M10.5.0/3"
+
+void printLocalTime()
+{
+  struct tm timeinfo;
+  if(!getLocalTime(&timeinfo))
+  {
+    Serial.println("Failed to obtain time");
+    return;
+  }
+  
+  // Convert to HH:MM:SS
+  char locTime[9];
+  sprintf(locTime, "%02d:%02d:%02d", timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+
+  // Convert to HH:MM:SS
+  char locdate[9];
+    sprintf(locdate, "%02d.%02d.%02d", timeinfo.tm_year-100, timeinfo.tm_mon+1, timeinfo.tm_mday);
+
+  Serial.print(locdate);
+  Serial.print(" ");
+  Serial.println(locTime);
+}
 
 
 void Config_Time()
 {
-  timeClient.begin();
+  struct tm timeinfo;
+
+  Serial.println("Setting up time");
+  configTime(0, 0, NTP_Server_local);    // First connect to NTP server, with 0 TZ offset
   
-  //setenv("TZ","CET-1CEST,M3.5.0,M10.5.0/3", 1);
-  //tzet();
+  if(!getLocalTime(&timeinfo))
+  {
+    Serial.println("  Failed to obtain time");
+    return;
+  }
+  Serial.printf("  Setting Timezone to ", TimeZone);
+  setenv("TZ", TimeZone, 1);  //  Now adjust the TZ.  Clock settings are adjusted to show the new local time
+  tzset();
 
-  timeClient.setTimeOffset(1 * 60 * 60 );   // Timezone: 1 * 3600 = GMT+1
-  timeClient.update();
-
-  Time_print_current_date_time();
+  printLocalTime();
 
 }
 
 
-void Time_NTP_Update()
-{
-  timeClient.update();
-}
 
 
 
 bool Time_NTP_isValid()
 {    
-  bool time_isValid = 0;
-  unsigned long epochTime = timeClient.getEpochTime();
-  
-  if(epochTime > 1577836800)  // check against custom date: 2020.01.01  00:00:00
-    time_isValid = 1;
-  else
-    time_isValid = 0;  
+  struct tm timeinfo;
+  if(!getLocalTime(&timeinfo))
+  {
+    Serial.println("  Failed to obtain time");
+    return 0;
+  }
 
-  return time_isValid;
+  return 1;
+}
+
+
+void Time_NTP_Update()
+{
+  printLocalTime();
 }
 
 
 
-void Time_print_current_date_time() 
-{
-  unsigned long epochTime = timeClient.getEpochTime();
-  Serial.print("Epoch Time: ");
-  Serial.println(epochTime);
-  
-  String formattedTime = timeClient.getFormattedTime();
-  Serial.print("Formatted Time: ");
-  Serial.println(formattedTime);  
-
-  int currentHour = timeClient.getHours();
-  Serial.print("Hour: ");
-  Serial.println(currentHour);  
-
-  int currentMinute = timeClient.getMinutes();
-  Serial.print("Minutes: ");
-  Serial.println(currentMinute); 
-   
-  int currentSecond = timeClient.getSeconds();
-  Serial.print("Seconds: ");
-  Serial.println(currentSecond);  
-
-  //Get a time structure
-  struct tm *ptm = gmtime ((time_t *)&epochTime); 
-
-  int monthDay = ptm->tm_mday;
-  Serial.print("Month day: ");
-  Serial.println(monthDay);
-
-  int currentMonth = ptm->tm_mon+1;
-  Serial.print("Month: ");
-  Serial.println(currentMonth);
 
 
-  int currentYear = ptm->tm_year+1900;
-  Serial.print("Year: ");
-  Serial.println(currentYear);
 
-  //Print complete date:
-  String currentDate = String(currentYear) + "-" + String(currentMonth) + "-" + String(monthDay);
-  Serial.print("Current date: ");
-  Serial.println(currentDate);
 
-  Serial.println("");
 
-}  
+
+
+
+
+

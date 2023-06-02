@@ -40,8 +40,11 @@ void LCD_Backlight_handle()
 
   if(LCD_TimeBasedCtrl)
   {
-  	int hr_now  	= timeClient.getHours();
-  	int mins_now  	= timeClient.getMinutes();
+    struct tm timeinfo;
+    getLocalTime(&timeinfo);
+
+  	int hr_now  	= timeinfo.tm_hour;
+  	int mins_now  = timeinfo.tm_min;
 
   	if(hr_now >= LCD_StartTime_hr &&
   	   mins_now >= LCD_StartTime_mins &&
@@ -348,9 +351,12 @@ void LCD_DisplayHumidity_Time()
 	int IN_h1 = int(Humidity)/10;
 	int IN_h2 = int(Humidity) - (IN_h1*10);
 
+    struct tm timeinfo;
+    getLocalTime(&timeinfo);
 
-	int time_hr = timeClient.getHours();
-	int time_mins = timeClient.getMinutes();
+  	int time_hr  	= timeinfo.tm_hour;
+  	int time_mins  = timeinfo.tm_min;
+
 
 	if(time_hr > 12)
 		time_hr = time_hr - 12;

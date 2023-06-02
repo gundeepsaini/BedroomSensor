@@ -7,14 +7,30 @@
 
 
 
+
+
 void Prep_webpage1()
 {
-  String timeStr = timeClient.getFormattedTime();
+  
+  // Get time
+  String timeStr;
+  struct tm timeinfo;
+  getLocalTime(&timeinfo);
+  // Convert to HH:MM:SS
+  char locTime[11];
+  sprintf(locTime, " %02d:%02d:%02d ", timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+  char locdate[11];
+  sprintf(locdate, " %d.%02d.%02d ", timeinfo.tm_year-100, timeinfo.tm_mon+1, timeinfo.tm_mday);
+
+  Serial.print(locdate);
+  Serial.print(" ");
+  Serial.println(locTime);
+
 
     // !!! ELements that don't change !!!
   String page_head ="<!DOCTYPE html><html><head><style>td,th{ border: 1px solid #dddddd; text-align: left; padding: 8px;} tr:nth-child(even){background-color: #dddddd;}</style></head>";
   String body_start = "<body>";
-  String body_table_start = String("<h2>") + DeviceHostName + String("</h2><h4>Updated: ") + timeStr + String("</h4><table>");
+  String body_table_start = String("<h2>") + DeviceHostName + String("</h2><h4>Updated: ") + String(locdate) + String(locTime) + String("</h4><table>");
   String body_table_row00 ="<tr><th>#</th><th>Description</th><th>Value</th><th>Unit</th></tr>";
   String body_end = "</table></body></html>";
 
